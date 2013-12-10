@@ -1,3 +1,6 @@
+.. index::
+   single: Security; "Remember me"
+
 How to add "Remember Me" Login Functionality
 ============================================
 
@@ -15,24 +18,22 @@ are shown here:
     .. code-block:: yaml
 
         # app/config/security.yml
-
         firewalls:
             main:
                 remember_me:
-                    key:      %secret%
-                    lifetime: 3600
+                    key:      "%secret%"
+                    lifetime: 31536000 # 365 days in seconds
                     path:     /
                     domain:   ~ # Defaults to the current domain from $_SERVER
 
     .. code-block:: xml
 
         <!-- app/config/security.xml -->
-
         <config>
             <firewall>
                 <remember-me
                     key      = "%secret%"
-                    lifetime = "3600"
+                    lifetime = "31536000" <!-- 365 days in seconds -->
                     path     = "/"
                     domain   = "" <!-- Defaults to the current domain from $_SERVER -->
                 />
@@ -42,15 +43,16 @@ are shown here:
     .. code-block:: php
 
         // app/config/security.php
-
         $container->loadFromExtension('security', array(
             'firewalls' => array(
-                'main' => array('remember_me' => array(
-                    'key'      => '%secret%',
-                    'lifetime' => 3600,
-                    'path'     => '/',
-                    'domain'   => '', // Defaults to the current domain from $_SERVER
-                )),
+                'main' => array(
+                    'remember_me' => array(
+                        'key'      => '%secret%',
+                        'lifetime' => 31536000, // 365 days in seconds
+                        'path'     => '/',
+                        'domain'   => '', // Defaults to the current domain from $_SERVER
+                    ),
+                ),
             ),
         ));
 
@@ -59,7 +61,7 @@ remember me functionality, as it will not always be appropriate. The usual
 way of doing this is to add a checkbox to the login form. By giving the checkbox
 the name ``_remember_me``, the cookie will automatically be set when the checkbox
 is checked and the user successfully logs in. So, your specific login form
-might ultimately look like this:
+might ultimately looks like this:
 
 .. configuration-block::
 
@@ -85,7 +87,7 @@ might ultimately look like this:
 
     .. code-block:: html+php
 
-        <?php // src/Acme/SecurityBundle/Resources/views/Security/login.html.php ?>
+        <!-- src/Acme/SecurityBundle/Resources/views/Security/login.html.php -->
         <?php if ($error): ?>
             <div><?php echo $error->getMessage() ?></div>
         <?php endif; ?>
@@ -110,17 +112,17 @@ the cookie remains valid.
 Forcing the User to Re-authenticate before accessing certain Resources
 ----------------------------------------------------------------------
 
-When the user returns to your site, he/she is authenticated automatically based
+When the user returns to your site, they are authenticated automatically based
 on the information stored in the remember me cookie. This allows the user
 to access protected resources as if the user had actually authenticated upon
 visiting the site.
 
 In some cases, however, you may want to force the user to actually re-authenticate
-before accessing certain resources. For example, you might allow a "remember me"
-user to see basic account information, but then require them to actually
+before accessing certain resources. For example, you might allow "remember me"
+users to see basic account information, but then require them to actually
 re-authenticate before modifying that information.
 
-The security component provides an easy way to do this. In addition to roles
+The Security component provides an easy way to do this. In addition to roles
 explicitly assigned to them, users are automatically given one of the following
 roles depending on how they are authenticated:
 
@@ -144,7 +146,7 @@ You can use these to control access beyond the explicitly assigned roles.
     represent three levels of increasing "strength" of authentication.
 
 You can use these additional roles for finer grained control over access to
-parts of a site. For example, you may want you user to be able to view their
+parts of a site. For example, you may want your user to be able to view their
 account at ``/account`` when authenticated by cookie but to have to provide
 their login details to be able to edit the account details. You can do this
 by securing specific controller actions using these roles. The edit action
@@ -155,14 +157,14 @@ In the following example, the action is only allowed if the user has the
 
 .. code-block:: php
 
-    use Symfony\Component\Security\Core\Exception\AccessDeniedException
     // ...
+    use Symfony\Component\Security\Core\Exception\AccessDeniedException
 
     public function editAction()
     {
         if (false === $this->get('security.context')->isGranted(
             'IS_AUTHENTICATED_FULLY'
-        )) {
+           )) {
             throw new AccessDeniedException();
         }
 
@@ -193,16 +195,16 @@ which can secure your controller using annotations:
     * If a non-authenticated (or anonymously authenticated user) tries to
       access the account area, the user will be asked to authenticate.
 
-    * Once the user has entered his username and password, assuming the
+    * Once the user has entered their username and password, assuming the
       user receives the ``ROLE_USER`` role per your configuration, the user
       will have the ``IS_AUTHENTICATED_FULLY`` role and be able to access
       any page in the account section, including the ``editAction`` controller.
 
-    * If the user's session ends, when the user returns to the site, he will
+    * If the user's session ends, when the user returns to the site, they will
       be able to access every account page - except for the edit page - without
-      being forced to re-authenticate. However, when he tries to access the
-      ``editAction`` controller, he will be forced to re-authenticate, since
-      he is not, yet, fully authenticated.
+      being forced to re-authenticate. However, when they try to access the
+      ``editAction`` controller, they will be forced to re-authenticate, since
+      they are not, yet, fully authenticated.
 
 For more information on securing services or methods in this way,
 see :doc:`/cookbook/security/securing_services`.

@@ -17,12 +17,11 @@ Finally, find the *master* repository for the language you want to contribute
 for. Here is the list of the official *master* repositories:
 
 * *English*:  https://github.com/symfony/symfony-docs
-* *French*:   https://github.com/gscorpio/symfony-docs-fr
+* *French*:   https://github.com/symfony-fr/symfony-docs-fr
 * *Italian*:  https://github.com/garak/symfony-docs-it
 * *Japanese*: https://github.com/symfony-japan/symfony-docs-ja
-* *Polish*:   https://github.com/ampluso/symfony-docs-pl
-* *Romanian*: https://github.com/sebio/symfony-docs-ro
-* *Russian*:  https://github.com/avalanche123/symfony-docs-ru
+* *Polish*:   https://github.com/symfony-docs-pl/symfony-docs-pl
+* *Portuguese (Brazilian)*:  https://github.com/andreia/symfony-docs-pt-BR
 * *Spanish*:  https://github.com/gitnacho/symfony-docs-es
 
 .. note::
@@ -59,7 +58,7 @@ Symfony2 documentation for a new language.
 As starting a translation is a lot of work, talk about your plan on the
 `Symfony docs mailing-list`_ and try to find motivated people willing to help.
 
-When the team is ready, nominate a team manager; he will be responsible for
+When the team is ready, nominate a team manager; they will be responsible for
 the *master* repository.
 
 Create the repository and copy the *English* documents.

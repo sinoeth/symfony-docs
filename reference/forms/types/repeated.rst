@@ -6,7 +6,7 @@ repeated Field Type
 
 This is a special field "group", that creates two identical fields whose
 values must match (or a validation error is thrown). The most common use
-is when you need the user to repeat his or her password or email to verify
+is when you need the user to repeat their password or email to verify
 accuracy.
 
 +-------------+------------------------------------------------------------------------+
@@ -14,14 +14,20 @@ accuracy.
 +-------------+------------------------------------------------------------------------+
 | Options     | - `type`_                                                              |
 |             | - `options`_                                                           |
+|             | - `first_options`_                                                     |
+|             | - `second_options`_                                                    |
 |             | - `first_name`_                                                        |
 |             | - `second_name`_                                                       |
 +-------------+------------------------------------------------------------------------+
+| Overridden  | - `error_bubbling`_                                                    |
+| Options     |                                                                        |
++-------------+------------------------------------------------------------------------+
 | Inherited   | - `invalid_message`_                                                   |
 | options     | - `invalid_message_parameters`_                                        |
-|             | - `error_bubbling`_                                                    |
+|             | - `mapped`_                                                            |
+|             | - `error_mapping`_                                                     |
 +-------------+------------------------------------------------------------------------+
-| Parent type | :doc:`field</reference/forms/types/form>`                              |
+| Parent type | :doc:`form </reference/forms/types/form>`                              |
 +-------------+------------------------------------------------------------------------+
 | Class       | :class:`Symfony\\Component\\Form\\Extension\\Core\\Type\\RepeatedType` |
 +-------------+------------------------------------------------------------------------+
@@ -34,7 +40,10 @@ Example Usage
     $builder->add('password', 'repeated', array(
         'type' => 'password',
         'invalid_message' => 'The password fields must match.',
-        'options' => array('label' => 'Password'),
+        'options' => array('attr' => array('class' => 'password-field')),
+        'required' => true,
+        'first_options'  => array('label' => 'Password'),
+        'second_options' => array('label' => 'Repeat Password'),
     ));
 
 Upon a successful form submit, the value entered into both of the "password"
@@ -46,6 +55,45 @@ The most important option is ``type``, which can be any field type and determine
 the actual type of the two underlying fields. The ``options`` option is passed
 to each of those individual fields, meaning - in this example - any option
 supported by the ``password`` type can be passed in this array.
+
+Rendering
+~~~~~~~~~
+
+The repeated field type is actually two underlying fields, which you can
+render all at once, or individually. To render all at once, use something
+like:
+
+.. configuration-block::
+
+    .. code-block:: jinja
+
+        {{ form_row(form.password) }}
+
+    .. code-block:: php
+
+        <?php echo $view['form']->row($form['password']) ?>
+
+To render each field individually, use something like this:
+
+.. configuration-block::
+
+    .. code-block:: jinja
+
+        {# .first and .second may vary in your use - see the note below #}
+        {{ form_row(form.password.first) }}
+        {{ form_row(form.password.second) }}
+
+    .. code-block:: php
+
+        <?php echo $view['form']->row($form['password']['first']) ?>
+        <?php echo $view['form']->row($form['password']['second']) ?>
+
+.. note::
+
+    The names ``first`` and ``second`` are the default names for the two
+    sub-fields. However, these names can be controlled via the `first_name`_
+    and `second_name`_ options. If you've set these options, then use those
+    values instead of ``first`` and ``second`` when rendering.
 
 Validation
 ~~~~~~~~~~
@@ -80,6 +128,29 @@ For example, if the ``type`` option is set to ``password``, this array might
 contain the options ``always_empty`` or ``required`` - both options that are
 supported by the ``password`` field type.
 
+first_options
+~~~~~~~~~~~~~
+
+**type**: ``array`` **default**: ``array()``
+
+Additional options (will be merged into `options` above) that should be passed
+*only* to the first field. This is especially useful for customizing the
+label::
+
+    $builder->add('password', 'repeated', array(
+        'first_options'  => array('label' => 'Password'),
+        'second_options' => array('label' => 'Repeat Password'),
+    ));
+
+second_options
+~~~~~~~~~~~~~~
+
+**type**: ``array`` **default**: ``array()``
+
+Additional options (will be merged into `options` above) that should be passed
+*only* to the second field. This is especially useful for customizing the
+label (see `first_options`_).
+
 first_name
 ~~~~~~~~~~
 
@@ -98,13 +169,23 @@ second_name
 
 The same as ``first_name``, but for the second field.
 
+Overridden Options
+------------------
+
+error_bubbling
+~~~~~~~~~~~~~~
+
+**default**: ``false``
+
 Inherited options
 -----------------
 
-These options inherit from the :doc:`field</reference/forms/types/field>` type:
+These options inherit from the :doc:`form </reference/forms/types/form>` type:
 
 .. include:: /reference/forms/types/options/invalid_message.rst.inc
 
 .. include:: /reference/forms/types/options/invalid_message_parameters.rst.inc
 
-.. include:: /reference/forms/types/options/error_bubbling.rst.inc
+.. include:: /reference/forms/types/options/mapped.rst.inc
+
+.. include:: /reference/forms/types/options/error_mapping.rst.inc

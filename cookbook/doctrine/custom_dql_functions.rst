@@ -1,5 +1,8 @@
-Registering Custom DQL Functions
-================================
+.. index::
+   single: Doctrine; Custom DQL functions
+
+How to Register Custom DQL Functions
+====================================
 
 Doctrine allows you to specify custom DQL functions. For more information
 on this topic, read Doctrine's cookbook article "`DQL User Defined Functions`_".
@@ -57,9 +60,11 @@ In Symfony, you can register your custom DQL functions as follows:
         $container->loadFromExtension('doctrine', array(
             'orm' => array(
                 // ...
+
                 'entity_managers' => array(
                     'default' => array(
                         // ...
+
                         'dql' => array(
                             'string_functions' => array(
                                 'test_string'   => 'Acme\HelloBundle\DQL\StringFunction',

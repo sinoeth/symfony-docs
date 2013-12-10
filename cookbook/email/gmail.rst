@@ -5,7 +5,7 @@ How to use Gmail to send Emails
 ===============================
 
 During development, instead of using a regular SMTP server to send emails, you
-might find using Gmail easier and more practical. The Swiftmailer bundle makes
+might find using Gmail easier and more practical. The SwiftmailerBundle makes
 it really easy.
 
 .. tip::
@@ -31,8 +31,8 @@ In the development configuration file, change the ``transport`` setting to
         <!-- app/config/config_dev.xml -->
 
         <!--
-        xmlns:swiftmailer="http://symfony.com/schema/dic/swiftmailer"
-        http://symfony.com/schema/dic/swiftmailer http://symfony.com/schema/dic/swiftmailer/swiftmailer-1.0.xsd
+            xmlns:swiftmailer="http://symfony.com/schema/dic/swiftmailer"
+            http://symfony.com/schema/dic/swiftmailer http://symfony.com/schema/dic/swiftmailer/swiftmailer-1.0.xsd
         -->
 
         <swiftmailer:config
@@ -50,6 +50,20 @@ In the development configuration file, change the ``transport`` setting to
         ));
 
 You're done!
+
+.. tip::
+
+    If you are using the Symfony Standard Edition, configure the parameters at ``parameters.yml``:
+
+    .. code-block:: yaml
+
+        # app/config/parameters.yml
+        parameters:
+            ...
+            mailer_transport: gmail
+            mailer_host:      ~
+            mailer_user:      your_gmail_username
+            mailer_password:  your_gmail_password
 
 .. note::
 

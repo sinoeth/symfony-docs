@@ -4,7 +4,7 @@
 How to use PHP instead of Twig for Templates
 ============================================
 
-Even if Symfony2 defaults to Twig for its template engine, you can still use
+Symfony2 defaults to Twig for its template engine, but you can still use
 plain PHP code if you want. Both templating engines are supported equally in
 Symfony2. Symfony2 adds some nice features on top of PHP to make writing
 templates with PHP more powerful.
@@ -18,7 +18,7 @@ your application configuration file:
 .. configuration-block::
 
     .. code-block:: yaml
-    
+
         # app/config/config.yml
         framework:
             # ...
@@ -27,9 +27,9 @@ your application configuration file:
     .. code-block:: xml
 
         <!-- app/config/config.xml -->
-        <framework:config ... >
+        <framework:config ...>
             <!-- ... -->
-            <framework:templating ... >
+            <framework:templating ...>
                 <framework:engine id="twig" />
                 <framework:engine id="php" />
             </framework:templating>
@@ -39,10 +39,11 @@ your application configuration file:
 
         $container->loadFromExtension('framework', array(
             // ...
-            'templating'      => array(
+
+            'templating' => array(
                 'engines' => array('twig', 'php'),
             ),
-        )); 
+        ));
 
 You can now render a PHP template instead of a Twig one simply by using the
 ``.php`` extension in the template name instead of ``.twig``. The controller
@@ -50,9 +51,27 @@ below renders the ``index.html.php`` template::
 
     // src/Acme/HelloBundle/Controller/HelloController.php
 
+    // ...
     public function indexAction($name)
     {
         return $this->render('AcmeHelloBundle:Hello:index.html.php', array('name' => $name));
+    }
+
+You can also use the :doc:`/bundles/SensioFrameworkExtraBundle/annotations/view`
+shortcut to render the default ``AcmeHelloBundle:Hello:index.html.php`` template::
+
+    // src/Acme/HelloBundle/Controller/HelloController.php
+
+    use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+
+    // ...
+
+    /**
+     * @Template(engine="php")
+     */
+    public function indexAction($name)
+    {
+        return array('name' => $name);
     }
 
 .. index::
@@ -63,7 +82,7 @@ Decorating Templates
 --------------------
 
 More often than not, templates in a project share common elements, like the
-well-known header and footer. In Symfony2, we like to think about this problem
+well-known header and footer. In Symfony2, this problem is thought about
 differently: a template can be decorated by another one.
 
 The ``index.html.php`` template is decorated by ``layout.html.php``, thanks to
@@ -95,7 +114,7 @@ Now, let's have a look at the ``layout.html.php`` file:
 The layout is itself decorated by another one (``::base.html.php``). Symfony2
 supports multiple decoration levels: a layout can itself be decorated by
 another one. When the bundle part of the template name is empty, views are
-looked for in the ``app/Resources/views/`` directory. This directory store
+looked for in the ``app/Resources/views/`` directory. This directory stores
 global views for your entire project:
 
 .. code-block:: html+php
@@ -191,7 +210,7 @@ The ``render()`` method evaluates and returns the content of another template
 (this is the exact same method as the one used in the controller).
 
 .. index::
-   single: Templating; Embedding Pages
+   single: Templating; Embedding pages
 
 Embedding other Controllers
 ---------------------------
@@ -206,7 +225,12 @@ If you create a ``fancy`` action, and want to include it into the
 .. code-block:: html+php
 
     <!-- src/Acme/HelloBundle/Resources/views/Hello/index.html.php -->
-    <?php echo $view['actions']->render('AcmeHelloBundle:Hello:fancy', array('name' => $name, 'color' => 'green')) ?>
+    <?php echo $view['actions']->render(
+        new ControllerReference('AcmeHelloBundle:Hello:fancy', array(
+            'name'  => $name,
+            'color' => 'green',
+        ))
+    ) ?>
 
 Here, the ``AcmeHelloBundle:Hello:fancy`` string refers to the ``fancy`` action of the
 ``Hello`` controller::
@@ -220,7 +244,10 @@ Here, the ``AcmeHelloBundle:Hello:fancy`` string refers to the ``fancy`` action 
             // create some object, based on the $color variable
             $object = ...;
 
-            return $this->render('AcmeHelloBundle:Hello:fancy.html.php', array('name' => $name, 'object' => $object));
+            return $this->render('AcmeHelloBundle:Hello:fancy.html.php', array(
+                'name'   => $name,
+                'object' => $object
+            ));
         }
 
         // ...
@@ -263,7 +290,7 @@ pattern:
 
     # src/Acme/HelloBundle/Resources/config/routing.yml
     hello: # The route name
-        pattern:  /hello/{name}
+        path:  /hello/{name}
         defaults: { _controller: AcmeHelloBundle:Hello:index }
 
 Using Assets: images, JavaScripts, and stylesheets
@@ -282,6 +309,21 @@ The ``assets`` helper's main purpose is to make your application more
 portable. Thanks to this helper, you can move the application root directory
 anywhere under your web root directory without changing anything in your
 template's code.
+
+Profiling Templates
+~~~~~~~~~~~~~~~~~~~
+
+By using the ``stopwatch`` helper, you are able to time parts of your template
+and display it on the timeline of the WebProfilerBundle::
+
+    <?php $view['stopwatch']->start('foo') ?>
+    ... things that get timed
+    <?php $view['stopwatch']->stop('foo') ?>
+
+.. tip::
+
+    If you use the same name more than once in your template, the times are
+    grouped on the same line in the timeline.
 
 Output Escaping
 ---------------

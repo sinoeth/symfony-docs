@@ -1,5 +1,5 @@
 .. index::
-   single: Profiling; Data Collector
+   single: Profiling; Data collector
 
 How to create a custom Data Collector
 =====================================
@@ -105,7 +105,7 @@ configuration, and tag it with ``data_collector``:
 Adding Web Profiler Templates
 -----------------------------
 
-When you want to display the data collected by your Data Collector in the web
+When you want to display the data collected by your data collector in the web
 debug toolbar or the web profiler, create a Twig template following this
 skeleton:
 
@@ -137,10 +137,18 @@ All blocks have access to the ``collector`` object.
 
 .. tip::
 
-    Built-in templates use a base64 encoded image for the toolbar (``<img
-    src="src="data:image/png;base64,..."``). You can easily calculate the
-    base64 value for an image with this little script: ``echo
-    base64_encode(file_get_contents($_SERVER['argv'][1]));``.
+    Built-in templates use a base64 encoded image for the toolbar:
+
+    .. code-block:: html
+
+        <img src="data:image/png;base64,..." />
+
+    You can easily calculate the base64 value for an image with this
+    little script::
+
+        #!/usr/bin/env php
+        <?php
+        echo base64_encode(file_get_contents($_SERVER['argv'][1]));
 
 To enable the template, add a ``template`` attribute to the ``data_collector``
 tag in your configuration. For example, assuming your template is in some
@@ -154,17 +162,20 @@ tag in your configuration. For example, assuming your template is in some
             data_collector.your_collector_name:
                 class: Acme\DebugBundle\Collector\Class\Name
                 tags:
-                    - { name: data_collector, template: "AcmeDebug:Collector:templatename", id: "your_collector_name" }
+                    - { name: data_collector, template: "AcmeDebugBundle:Collector:templatename", id: "your_collector_name" }
 
     .. code-block:: xml
 
         <service id="data_collector.your_collector_name" class="Acme\DebugBundle\Collector\Class\Name">
-            <tag name="data_collector" template="AcmeDebug:Collector:templatename" id="your_collector_name" />
+            <tag name="data_collector" template="AcmeDebugBundle:Collector:templatename" id="your_collector_name" />
         </service>
 
     .. code-block:: php
 
         $container
             ->register('data_collector.your_collector_name', 'Acme\DebugBundle\Collector\Class\Name')
-            ->addTag('data_collector', array('template' => 'AcmeDebugBundle:Collector:templatename', 'id' => 'your_collector_name'))
+            ->addTag('data_collector', array(
+                'template' => 'AcmeDebugBundle:Collector:templatename',
+                'id'       => 'your_collector_name',
+            ))
         ;

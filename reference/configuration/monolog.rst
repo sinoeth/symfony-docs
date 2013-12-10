@@ -1,8 +1,8 @@
 .. index::
-   pair: Monolog; Configuration Reference
+   pair: Monolog; Configuration reference
 
-Configuration Reference
-=======================
+MonologBundle Configuration ("monolog")
+=======================================
 
 .. configuration-block::
 
@@ -18,6 +18,8 @@ Configuration Reference
                     level:               ERROR
                     bubble:              false
                     formatter:           my_formatter
+                    processors:
+                        - some_callable
                 main:
                     type:                fingers_crossed
                     action_level:        WARNING
@@ -27,28 +29,36 @@ Configuration Reference
                     type:                service
                     id:                  my_handler
 
-                # Prototype
-                name:
+                # Default options and values for some "my_custom_handler" 
+                # Note: many of these options are specific to the "type".
+                # For example, the "service" type doesn't use any options
+                # except id and channels
+                my_custom_handler:
                     type:                 ~ # Required
                     id:                   ~
                     priority:             0
                     level:                DEBUG
                     bubble:               true
-                    path:                 %kernel.logs_dir%/%kernel.environment%.log
+                    path:                 "%kernel.logs_dir%/%kernel.environment%.log"
                     ident:                false
                     facility:             user
                     max_files:            0
                     action_level:         WARNING
+                    activation_strategy:  ~
                     stop_buffering:       true
                     buffer_size:          0
                     handler:              ~
                     members:              []
+                    channels:
+                        type:     ~
+                        elements: ~
                     from_email:           ~
                     to_email:             ~
                     subject:              ~
+                    mailer:               ~
                     email_prototype:
-                        id:     ~ # Required (when the email_prototype is used)
-                        method: ~
+                        id:                   ~ # Required (when the email_prototype is used)
+                        method:               ~
                     formatter:            ~
 
     .. code-block:: xml

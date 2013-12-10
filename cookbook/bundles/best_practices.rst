@@ -1,15 +1,15 @@
 .. index::
-   single: Bundles; Best Practices
+   single: Bundle; Best practices
 
-Bundle Structure and Best Practices
-===================================
+How to use Best Practices for Structuring Bundles
+=================================================
 
 A bundle is a directory that has a well-defined structure and can host anything
 from classes to controllers and web resources. Even if bundles are very
 flexible, you should follow some best practices if you want to distribute them.
 
 .. index::
-   pair: Bundles; Naming Conventions
+   pair: Bundle; Naming conventions
 
 .. _bundles-naming-conventions:
 
@@ -56,7 +56,7 @@ class name.
 .. note::
 
     Symfony2 core Bundles do not prefix the Bundle class with ``Symfony``
-    and always add a ``Bundle`` subnamespace; for example:
+    and always add a ``Bundle`` sub-namespace; for example:
     :class:`Symfony\\Bundle\\FrameworkBundle\\FrameworkBundle`.
 
 Each bundle has an alias, which is the lower-cased short version of the bundle
@@ -134,6 +134,12 @@ The following classes and files have specific emplacements:
 | Unit and Functional Tests    | ``Tests/``                  |
 +------------------------------+-----------------------------+
 
+.. note::
+
+    When building a reusable bundle, model classes should be placed in the
+    ``Model`` namespace. See :doc:`/cookbook/doctrine/mapping_model_classes` for
+    how to handle the mapping with a compiler pass.
+
 Classes
 -------
 
@@ -142,13 +148,13 @@ instance, a ``HelloController`` controller is stored in
 ``Bundle/HelloBundle/Controller/HelloController.php`` and the fully qualified
 class name is ``Bundle\HelloBundle\Controller\HelloController``.
 
-All classes and files must follow the Symfony2 coding :doc:`standards
-</contributing/code/standards>`.
+All classes and files must follow the Symfony2 coding
+:doc:`standards </contributing/code/standards>`.
 
 Some classes should be seen as facades and should be as short as possible, like
 Commands, Helpers, Listeners, and Controllers.
 
-Classes that connect to the Event Dispatcher should be suffixed with
+Classes that connect to the event dispatcher should be suffixed with
 ``Listener``.
 
 Exceptions classes should be stored in an ``Exception`` sub-namespace.
@@ -172,7 +178,7 @@ the ``Tests/`` directory. Tests should follow the following principles:
   a sample application;
 * The functional tests should only be used to test the response output and
   some profiling information if you have some;
-* The code coverage should at least covers 95% of the code base.
+* The tests should cover at least 95% of the code base.
 
 .. note::
    A test suite must not contain ``AllTests.php`` scripts, but must rely on the
@@ -183,10 +189,10 @@ Documentation
 
 All classes and functions must come with full PHPDoc.
 
-Extensive documentation should also be provided in the :doc:`reStructuredText
-</contributing/documentation/format>` format, under the ``Resources/doc/``
-directory; the ``Resources/doc/index.rst`` file is the only mandatory file and
-must be the entry point for the documentation.
+Extensive documentation should also be provided in the
+:doc:`reStructuredText </contributing/documentation/format>` format, under
+the ``Resources/doc/`` directory; the ``Resources/doc/index.rst`` file is
+the only mandatory file and must be the entry point for the documentation.
 
 Controllers
 -----------
@@ -263,6 +269,7 @@ The end user can provide values in any configuration file:
 
     .. code-block:: ini
 
+        ; app/config/config.ini
         [parameters]
         acme_hello.email.from = fabien@example.com
 

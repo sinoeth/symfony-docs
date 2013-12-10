@@ -4,10 +4,11 @@
 How to change the Default Target Path Behavior
 ==============================================
 
-By default, the security component retains the information of the last request
-URI in a session variable named ``_security.target_path``. Upon a successful
-login, the user is redirected to this path, as to help her continue from
-the last known page she visited.
+By default, the Security component retains the information of the last request
+URI in a session variable named ``_security.main.target_path`` (with ``main`` being
+the name of the firewall, defined in ``security.yml``). Upon a successful
+login, the user is redirected to this path, as to help them continue from the
+last known page they visited.
 
 On some occasions, this is unexpected. For example when the last request
 URI was an HTTP POST against a route which is configured to allow only a POST
@@ -18,7 +19,7 @@ class and override the default method named ``setTargetPath()``.
 
 First, override the ``security.exception_listener.class`` parameter in your
 configuration file. This can be done from your main configuration file (in
-`app/config`) or from a configuration file being imported from a bundle:
+``app/config``) or from a configuration file being imported from a bundle:
 
 .. configuration-block::
 
@@ -61,7 +62,7 @@ Next, create your own ``ExceptionListener``::
                 return;
             }
 
-            $request->getSession()->set('_security.target_path', $request->getUri());
+            parent::setTargetPath($request);
         }
     }
 

@@ -1,12 +1,16 @@
+.. index::
+   single: Security; Securing any service
+   single: Security; Securing any method
+
 How to secure any Service or Method in your Application
 =======================================================
 
-In the security chapter, you can see how to :ref:`secure a controller<book-security-securing-controller>`
+In the security chapter, you can see how to :ref:`secure a controller <book-security-securing-controller>`
 by requesting the ``security.context`` service from the Service Container
 and checking the current user's role::
 
-    use Symfony\Component\Security\Core\Exception\AccessDeniedException;
     // ...
+    use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
     public function helloAction($name)
     {
@@ -26,6 +30,7 @@ role. Before you add security, the class looks something like this:
 
 .. code-block:: php
 
+    // src/Acme/HelloBundle/Newsletter/NewsletterManager.php
     namespace Acme\HelloBundle\Newsletter;
 
     class NewsletterManager
@@ -33,7 +38,7 @@ role. Before you add security, the class looks something like this:
 
         public function sendNewsletter()
         {
-            // where you actually do the work
+            // ... where you actually do the work
         }
 
         // ...
@@ -74,8 +79,8 @@ Then in your service configuration, you can inject the service:
 
         services:
             newsletter_manager:
-                class:     %newsletter_manager.class%
-                arguments: [@security.context]
+                class:     "%newsletter_manager.class%"
+                arguments: ["@security.context"]
 
     .. code-block:: xml
 
@@ -127,7 +132,7 @@ The injected service can then be used to perform the security check when the
                 throw new AccessDeniedException();
             }
 
-            //--
+            // ...
         }
 
         // ...
@@ -140,13 +145,13 @@ Securing Methods Using Annotations
 ----------------------------------
 
 You can also secure method calls in any service with annotations by using the
-optional `JMSSecurityExtraBundle`_ bundle. This bundle is included in the
-Symfony2 Standard Distribution.
+optional `JMSSecurityExtraBundle`_ bundle. This bundle is not included in the
+Symfony2 Standard Distribution, but you can choose to install it.
 
-To enable the annotations functionality, :ref:`tag<book-service-container-tags>`
+To enable the annotations functionality, :ref:`tag <book-service-container-tags>`
 the service you want to secure with the ``security.secure_service`` tag
 (you can also automatically enable this functionality for all services, see
-the :ref:`sidebar<securing-services-annotations-sidebar>` below):
+the :ref:`sidebar <securing-services-annotations-sidebar>` below):
 
 .. configuration-block::
 
@@ -201,7 +206,7 @@ You can then achieve the same results as above using an annotation::
          */
         public function sendNewsletter()
         {
-            //--
+            // ...
         }
 
         // ...
@@ -214,7 +219,7 @@ You can then achieve the same results as above using an annotation::
     annotations on public and protected methods, you cannot use them with
     private methods or methods marked final.
 
-The ``JMSSecurityExtraBundle`` also allows you to secure the parameters and return
+The JMSSecurityExtraBundle also allows you to secure the parameters and return
 values of methods. For more information, see the `JMSSecurityExtraBundle`_
 documentation.
 
@@ -238,11 +243,14 @@ documentation.
 
         .. code-block:: xml
 
-            <!-- app/config/config.xml -->
-            <srv:container xmlns="http://symfony.com/schema/dic/security"
+            <?xml version="1.0" ?>
+
+            <container xmlns="http://symfony.com/schema/dic/services"
                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                xmlns:srv="http://symfony.com/schema/dic/services"
-                xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+                xmlns:acme_hello="http://www.example.com/symfony/schema/"
+                xsi:schemaLocation="http://www.example.com/symfony/schema/ http://www.example.com/symfony/schema/hello-1.0.xsd">
+
+                <!-- app/config/config.xml -->
 
                 <jms_security_extra secure_controllers="true" secure_all_services="true" />
 
@@ -253,6 +261,7 @@ documentation.
             // app/config/config.php
             $container->loadFromExtension('jms_security_extra', array(
                 // ...
+
                 'secure_all_services' => true,
             ));
 
